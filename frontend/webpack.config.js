@@ -47,13 +47,14 @@ module.exports = {
     compress: true,
     port: 5173,
     hot: true,
-    proxy: {
-      "/api": {
+    proxy: [
+      {
+        context: ["/api"],
         target: "http://localhost:3000",
         changeOrigin: true,
         secure: false,
       },
-    },
+    ],
   },
   module: {
     rules: [
