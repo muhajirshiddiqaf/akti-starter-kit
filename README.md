@@ -1,53 +1,104 @@
-# Express API Starter
+# AKTI Starter Kit
 
-A JavaScript Express v5 starter template with sensible defaults. For a TypeScript starter see the [express-api-starter-ts](https://github.com/w3cj/express-api-starter-ts)
+Starter kit full-stack: **Backend Express.js** (API + SQLite) dan **Frontend** (TailAdmin template) dengan fitur **login & register** terintegrasi.
 
-How to use this template:
+## Tech Stack
 
-```sh
-pnpm dlx create-express-api@latest --directory my-api-name
-```
+- **Backend:** Express 5, SQLite (better-sqlite3), JWT, bcryptjs, Zod
+- **Frontend:** TailAdmin (Tailwind, Alpine.js, Webpack)
+- **Dev:** Nodemon (auto-restart backend), Concurrently (jalankan FE + BE sekaligus)
 
-Includes API Server utilities:
+## Fitur
 
-- [morgan](https://www.npmjs.com/package/morgan)
-  - HTTP request logger middleware for node.js
-- [helmet](https://www.npmjs.com/package/helmet)
-  - Helmet helps you secure your Express apps by setting various HTTP headers. It's not a silver bullet, but it can help!
-- [cors](https://www.npmjs.com/package/cors)
-  - CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
+- **API Auth:** `POST /api/v1/auth/register`, `POST /api/v1/auth/login`
+- **Login & Register** di frontend (signin.html, signup.html) terhubung ke API
+- **Token JWT** disimpan di `localStorage` setelah login sukses
+- **Database SQLite** di `data/app.db` (tabel `users`)
 
-Development utilities:
+## Prerequisites
 
-- [eslint](https://www.npmjs.com/package/eslint)
-  - ESLint is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
-- [vitest](https://www.npmjs.com/package/vitest)
-  - Next generation testing framework powered by Vite.
-- [zod](https://www.npmjs.com/package/zod)
-  - Validated env with zod schema
-- [supertest](https://www.npmjs.com/package/supertest)
-  - HTTP assertions made easy via superagent.
+- Node.js (v18+)
+- npm atau pnpm
 
 ## Setup
 
-```
-pnpm install
+```bash
+# Install dependency root (backend)
+npm install
+
+# Install dependency frontend
+cd frontend && npm install && cd ..
 ```
 
-## Lint
+## Environment
 
-```
-pnpm run lint
-```
+Salin `.env.sample` ke `.env` dan sesuaikan (opsional):
 
-## Test
-
-```
-pnpm test
+```bash
+cp .env.sample .env
 ```
 
-## Development
+Contoh `.env`:
 
 ```
-pnpm run dev
+NODE_ENV=development
+PORT=3000
+JWT_SECRET=rahasia-minimal-16-karakter
 ```
+
+## Scripts
+
+| Perintah | Keterangan |
+|----------|------------|
+| `npm start` | Jalankan **backend** (port 3000) + **frontend** (port 5173) sekaligus; auto refresh saat ada perubahan |
+| `npm run start:backend` | Hanya backend dengan Nodemon (restart otomatis) |
+| `npm run start:frontend` | Hanya frontend (Webpack dev server, hot reload) |
+| `npm run build:frontend` | Build frontend ke `frontend/build` (untuk production) |
+| `npm run dev` | Hanya backend (tanpa Nodemon, pakai `node --watch`) |
+| `npm run lint` | Jalankan ESLint |
+| `npm test` | Jalankan Vitest |
+
+## Development (FE + BE sekaligus)
+
+```bash
+npm start
+```
+
+- **Backend:** http://localhost:3000 (Nodemon: restart saat file di `src/` berubah)
+- **Frontend:** http://localhost:5173 (Webpack: hot reload)
+- Login/register di frontend memanggil API di port 3000 (CORS sudah diizinkan)
+
+Setelah development, buka http://localhost:5173 → **signin.html** atau **signup.html**.
+
+## Production
+
+```bash
+npm run build:frontend
+PORT=3000 node --env-file=.env src/index.js
+```
+
+Backend akan melayani API (`/api/v1`) dan file static dari `frontend/build`. Atur `PORT` dan `JWT_SECRET` di environment.
+
+## API
+
+### Auth
+
+- **POST** `/api/v1/auth/register`  
+  Body: `{ "email", "password", "name?" }`  
+  Response: `{ "message", "user", "token" }`
+
+- **POST** `/api/v1/auth/login`  
+  Body: `{ "email", "password" }`  
+  Response: `{ "message", "user", "token" }`
+
+- **GET** `/api/v1/me`  
+  Header: `Authorization: Bearer <token>`  
+  Response: `{ "user": { "userId", "email" } }`
+
+## Repository
+
+[https://github.com/muhajirshiddiqaf/akti-starter-kit](https://github.com/muhajirshiddiqaf/akti-starter-kit)
+
+## License
+
+MIT
