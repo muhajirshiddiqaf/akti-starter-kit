@@ -18,7 +18,8 @@
     "dev": "node --watch --env-file=.env src/index.js",
     "build:frontend": "cd frontend && npm run build",
     "lint": "eslint --fix src",
-    "test": "vitest run"
+    "test": "vitest run",
+    "install-all": "npm install && cd frontend && npm install"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
